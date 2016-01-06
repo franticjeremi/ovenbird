@@ -1,0 +1,6 @@
+# db.cnf
+[client]
+database = 'ovenbird'
+user = 'root'
+password = ''
+default-character-set = utf8

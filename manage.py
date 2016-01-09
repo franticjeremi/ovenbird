@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+
+# включить виртуальную машину, а потом запускать python manage.py ...
 import os
 import sys
 

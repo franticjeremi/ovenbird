@@ -55,10 +55,18 @@ ROOT_URLCONF = 'ovenbird.urls'
 
 TEMPLATES = [
     {
-        #'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates/jinja2'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'environment': 'ovenbird.jinja2.environment',
+        },
+    },
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,6 +78,16 @@ TEMPLATES = [
         },
     },
 ]
+"""TEMPLATES = [{
+    'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    'DIRS': [
+        os.path.join(BASE_DIR, 'templates/jinja2'),
+    ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'environment': '/virtualenv/ovenbird/Lib/site-packages/jinja2/jinja2.environment',
+    },
+},]"""
 
 WSGI_APPLICATION = 'ovenbird.wsgi.application'
 
@@ -77,16 +95,32 @@ WSGI_APPLICATION = 'ovenbird.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': '/path/to/db.cnf',
-        },
+        'NAME': 'ovenbird',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': 5432,
+    }
+}"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ovenbird',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
-
-
+"""DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
+    }
+}"""
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -125,8 +159,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-TEMPLATE_LOADERS = (
+"""TEMPLATE_LOADERS = (
     'django_jinja.loaders.AppLoader',
     'django_jinja.loaders.FileSystemLoader',
 
-)
+)"""

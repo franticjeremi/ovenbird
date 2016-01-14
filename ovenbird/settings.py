@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'offsite',
+    'registration',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -95,16 +96,6 @@ WSGI_APPLICATION = 'ovenbird.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-"""DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ovenbird',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': 5432,
-    }
-}"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -139,6 +130,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'registration.CustomUser'
+AUTHENTICATION_BACKENDS = ['registration.backends.EmailAuthBackend', ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -159,8 +152,37 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-"""TEMPLATE_LOADERS = (
+TEMPLATE_LOADERS = (
     'django_jinja.loaders.AppLoader',
     'django_jinja.loaders.FileSystemLoader',
 
-)"""
+)
+
+if DEBUG:
+    INTERNAL_IPS = ('127.0.0.1',)
+    MIDDLEWARE_CLASSES += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )
+
+    INSTALLED_APPS += (
+        'debug_toolbar',
+    )
+
+    DEBUG_TOOLBAR_PANELS = [
+        'debug_toolbar.panels.versions.VersionsPanel',
+        'debug_toolbar.panels.timer.TimerPanel',
+        'debug_toolbar.panels.settings.SettingsPanel',
+        'debug_toolbar.panels.headers.HeadersPanel',
+        'debug_toolbar.panels.request.RequestPanel',
+        'debug_toolbar.panels.sql.SQLPanel',
+        'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+        'debug_toolbar.panels.templates.TemplatesPanel',
+        'debug_toolbar.panels.cache.CachePanel',
+        'debug_toolbar.panels.signals.SignalsPanel',
+        'debug_toolbar.panels.logging.LoggingPanel',
+        'debug_toolbar.panels.redirects.RedirectsPanel',
+    ]
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS': False,
+    }

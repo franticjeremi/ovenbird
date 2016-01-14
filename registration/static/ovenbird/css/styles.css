@@ -1,0 +1,269 @@
+* {
+ margin: 0;
+ padding: 0;
+}
+ 
+body {
+ width: 100%;
+ height: 100%;
+ /*color:#000000;*/
+ /*background: #000000;*/
+ font-family: "Segoe UI", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+ font-size: 16px;
+ line-height: 2;
+}
+
+hr {
+	opacity: 0.2;
+}
+
+a {
+    color: #517575;
+    text-decoration: none;
+}
+
+a:hover {
+  color: #517575;
+  background-color:#8aabab;
+  cursor: pointer;
+}
+
+a:visited {
+  color: #004A4A;
+}
+
+aside, nav, footer, header, section { display: block; }
+
+#auth-line {
+	position: fixed;
+	z-index: 1;
+	margin-left: 20%;
+}
+
+#background div {
+	position: fixed;
+	overflow:hidden;
+}
+
+#background div img {
+	width: 100%;
+}
+
+#angel-girl img{
+	margin-left: -10%;
+	margin-top: 3%;
+}
+
+#tiger {
+	opacity: 0.6;
+	margin-top: -8%;
+}
+
+#tiger img {
+	margin-left: 25%;
+}
+
+#main {
+	margin-top: 25%;
+	position: absolute;
+	width: 100%;
+}
+
+#main div {
+	vertical-align: top;
+}
+
+#top {
+	z-index: 1;
+	position: relative;
+	overflow: hidden;
+}
+
+#top img{
+	margin-left: -0.5%;
+	width: 101%;
+}
+
+#main-background {
+	position: absolute;
+	z-index: 0.5;
+	width: 100%;
+	height: 110%;
+	margin-top: -9%;
+	overflow: hidden;
+}
+
+#main-background img {
+	width: 100%;
+}
+
+#bottom {
+	margin-top: -2.5%;
+	display: table;
+	opacity: 0.9;
+}
+
+#bottom div {
+	display: table-cell;
+}
+
+#left {
+	width: 20%;
+}
+
+#center {
+	width: 60%;
+}
+
+#center img {
+	width: 100%;
+}
+
+#right {
+	width: 20%;
+	/*text-align: right;*/
+}
+
+#left-info, #right-info {
+	position: absolute;
+	margin-top: -35%;
+	width: 20%;
+	margin-left: -2%;
+}
+
+#left-flex-pages {
+	position: absolute;
+	margin-top: 5%;
+	margin-left: 5%;
+}
+
+#left-flex-pages a {
+	display: block;
+	font-size: 18px;
+}
+
+#effects {
+	position: absolute;
+	margin-top: -62%;
+	width: 28%;
+}
+
+#flex-news {
+	position: absolute;
+	margin-top: 8%;
+	margin-left: 0.5%;
+	width: 27%;
+	color: #517575;	
+}
+
+/*CSS для аутентификациионных и авторизационных страниц и форм*/
+.wrapper {
+	width: 545px;
+    height: auto;
+    margin: 0 auto;
+    padding: 20px;    
+    position: relative;
+    border: 2px solid #ddd;
+    border-radius: 0% 13% 8%;
+}
+.wrapper form {
+    padding: 35px 0;
+}
+.wrapper form label {
+	font: bold 18px/25px Corbel, Arial, Helvetica; 
+    text-shadow: 0 1px 0 #fff, 0 2px 0 #ccc;
+    float: left; 
+    margin-right: 10px; 
+    width: 120px; 
+}
+.wrapper form input {
+	font: 15px Arial, Helvetica; 
+    padding: 5px;
+    margin: 0 0 20px 0;
+    border: 1px solid #b9bdc1; 
+    width: 400px; 
+    color: #797979;
+    -moz-box-shadow: 0 2px 4px #bbb inset;
+    -webkit-box-shadow: 0 2px 4px #bbb inset;
+    box-shadow: 0 2px 4px #bbb inset;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+.wrapper form input:focus {
+	background-color: #E7E8E7;
+    outline: 0;
+}
+.wrapper button {
+	float: right;
+    margin: 10px 0 0 0;
+    padding: 7px 15px;
+    cursor: pointer;   
+    color: #fff;
+    font: bold 13px Tahoma, Verdana, Arial;
+    text-transform: uppercase;
+    overflow: visible; /* IE6/7 fix */
+    border: 0;  
+    background-color: #7089b3;
+    background-image: -moz-linear-gradient(#a5b8da, #7089b3);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#a5b8da), to(#7089b3));    
+    background-image: -webkit-linear-gradient(#a5b8da, #7089b3);
+    background-image: -o-linear-gradient(#a5b8da, #7089b3);
+    background-image: -ms-linear-gradient(#a5b8da, #7089b3);
+    background-image: linear-gradient(#a5b8da, #7089b3);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#a5b8da', EndColorStr='#7089b3');
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    text-shadow: 0 1px 0 rgba(0,0,0,.3);
+    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 3px 0 rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 3px 0 rgba(0, 0, 0, 0.7);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 3px 0 rgba(0, 0, 0, 0.7);
+}
+.wrapper button:hover {
+	background-color: #a5b8da;
+    background-image: -moz-linear-gradient(#7089b3, #a5b8da);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#7089b3), to(#a5b8da));      
+    background-image: -webkit-linear-gradient(#7089b3, #a5b8da);
+    background-image: -o-linear-gradient(#7089b3, #a5b8da);
+    background-image: -ms-linear-gradient(#7089b3, #a5b8da);
+    background-image: linear-gradient(#7089b3, #a5b8da);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#7089b3', EndColorStr='#a5b8da');     
+}
+.wrapper button:active {
+    background: #64799e;
+    position: relative;
+    top: 2px;
+    -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset;
+    -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset; 
+}
+.wrapper input:focus {
+    padding-right:2px;
+}
+.wrapper input {
+    -moz-transition: padding .25s;
+    -webkit-transition: padding .25s;
+    -o-transition: padding .25s;
+    transition: padding .25s;
+}
+.wrapper input:required {
+    background: #fff url(/static/offsite/images/red_asterisk.png) no-repeat 98% center;
+}
+.wrapper input:focus:invalid {
+	background: #fff url(/static/offsite/images/invalid.png) no-repeat 98% center;
+    box-shadow: 0 0 5px #d45252;
+    border-color: #b03535
+}
+.wrapper input:required:valid {
+	background: #fff url(/static/offsite/images/valid.png) no-repeat 98% center;
+    box-shadow: 0 0 5px #5cd053;
+    border-color: #28921f;
+}
+.error {
+	background: #f1dede;
+	padding-left: 25px;
+	color:#b74c45;
+	border-radius: 10px;
+	box-shadow: 5px 5px 5px #888888;
+}

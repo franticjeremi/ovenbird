@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Аутентификация</title>
+    <link href="/static/ovenbird/css/styles.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="wrapper">
+    	<form action="" method="post" class="auth">
+      		{% csrf_token %}
+      		{% if form.errors %}
+    			{% for field in form %}
+        			{% for error in field.errors %}
+            			<div class="alert alert-error">
+                			<strong>{{ error|escape }}</strong>
+            			</div>
+        			{% endfor %}	
+    			{% endfor %}
+    			{% for error in form.non_field_errors %}
+        			<div class="alert alert-error">
+            			<strong>{{ error|escape }}</strong>
+        			</div>
+    			{% endfor %}
+			{% endif %}
+      		{% for field in form.visible_fields %}
+      			{{ field.label_tag }}
+    			{{ field }}
+      		{% endfor %}
+      		<button type="submit">Войти</button>
+    	</form>
+    </div>
+  </body>
+</html>

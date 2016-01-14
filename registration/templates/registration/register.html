@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Регистрация</title>
+    <link href="/static/ovenbird/css/styles.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="wrapper">
+    	<div class="error">
+    		<ul>
+				{% for field in form.visible_fields %}
+    				{% for err in field.errors %}
+    				<li>
+    					{{ field.label }}:
+    					{{ err }}
+    				</li>
+    				{% endfor %}
+				{% endfor %}
+			</ul>
+		</div>
+    	<form action="" method="post" class="auth">
+    		{% csrf_token %}
+      		{% for field in form.visible_fields %}
+      			{{ field.label_tag }}
+    			{{ field }}
+      		{% endfor %}
+      	<button type="submit">Зарегистрироваться</button>
+    	</form>
+    </div>
+  </body>
+</html>

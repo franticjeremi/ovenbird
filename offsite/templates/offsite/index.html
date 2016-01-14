@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Главная страница</title>
+  </head>
+  <body>
+  	{% if username %}
+  	    {{ username }}
+  	    <a href="{% url 'registration:logout' %}">Выйти</a>
+  	{% else %}
+    <a href="{% url 'registration:register' %}">Зарегистрироваться</a>
+    <a href="{% url 'registration:login' %}">Войти</a>
+    {% endif %}
+  </body>
+</html>

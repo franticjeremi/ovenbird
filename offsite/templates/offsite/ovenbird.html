@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Печники</title>
+    <link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
+  </head>
+  <body>
+  <a href="{{request.META.HTTP_REFERER}}">Назад</a>
+	{{ ovenbird.name }}
+	{% if request.user.id == ovenbird.customuser_id %}
+		<a href="{% url 'offsite:createobject' type=1 %}">Создать новый объект</a>
+		<a href="{% url 'offsite:createobject' type=2 %}">Создать новую статью</a>
+	{% endif %}
+    
+  </body>
+</html>

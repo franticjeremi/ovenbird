@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from captcha.fields import CaptchaField
 
 from registration.models import CustomUser
 
@@ -11,15 +12,20 @@ class RegistrationForm(UserCreationForm):
     password1 = forms.CharField(
         required=True,
         label="Пароль",
-        widget=forms.PasswordInput)
+        widget=forms.PasswordInput
+    )
     password2 = forms.CharField(
         required=True, 
         label="Повторный пароль", 
-        widget=forms.PasswordInput)
+        widget=forms.PasswordInput
+    )
     email = forms.EmailField(
         required=True, 
         label="Электронная почта", 
         widget=forms.TextInput(attrs={'placeholder': 'xxx@yourmail.ru','type':'email'})
+    )
+    captcha = CaptchaField(
+        label="Капча"
     )
 
     class Meta:
@@ -33,7 +39,7 @@ class RegistrationForm(UserCreationForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords don't match")
         return password2
-        
+            
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super(RegistrationForm, self).save(commit=False)
@@ -43,9 +49,7 @@ class RegistrationForm(UserCreationForm):
         return user
     
 class MyAuthenticationForm(forms.Form):
-    #def __init__(self, *args, **kwargs): 
-        #super(MyAuthenticationForm, self).__init__(*args, **kwargs) 
-        #self.fields.pop('username')
+
     email = forms.EmailField(
         required=True, 
         label="Электронная почта", 

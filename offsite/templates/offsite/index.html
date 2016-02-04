@@ -5,12 +5,37 @@
     <title>Главная страница</title>
   </head>
   <body>
-  	{% if username %}
-  	    {{ username }}
+  	{% if request.user.email %}
+  	    {{ request.user.email }}
+  	    <a href="{% url 'offsite:myprofile' %}">Профиль</a>
   	    <a href="{% url 'registration:logout' %}">Выйти</a>
   	{% else %}
     <a href="{% url 'registration:register' %}">Зарегистрироваться</a>
     <a href="{% url 'registration:login' %}">Войти</a>
     {% endif %}
+    {% for ovenbird in ovenbirds %}
+    <br/>
+    {{ ovenbird.name|upper }}
+    <br/>
+    {{ ovenbird.text }}
+    <br/>
+    <a href="{% url 'offsite:showovenbird' ovenbird.id %}">Печник</a>
+	{% endfor %}
+
+	<div class="pagination">
+    	<span class="step-links">
+        {% if ovenbirds.has_previous %}
+            <a href="?page={{ ovenbirds.previous_page_number }}">предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ ovenbirds.number }} из {{ ovenbirds.paginator.num_pages }}.
+        </span>
+
+        {% if ovenbirds.has_next %}
+            <a href="?page={{ ovenbirds.next_page_number }}">следующая</a>
+        {% endif %}
+    	</span>
+	</div>
   </body>
 </html>

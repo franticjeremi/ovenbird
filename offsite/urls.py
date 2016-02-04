@@ -13,14 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import patterns,url
+from django.conf.urls import url
+from .views import ShowOvenbird
+from . import views
 #from offsite.views import AboutView
 
-urlpatterns = patterns('offsite.views',
-    #url(r'^$', AboutView.as_view(), name="index"),
-    url(r'^$', 'myview', name="index"),
-    """url(r'^$', NewsView.as_view(), name="index"),
-    url(r'^news/(?P<news_id>[0-9]+)/$', showNews, name="one_news"),
-    url(r'^register/$', registrationUser, name='register'),
-    url(r'^login/$', LoginFormView.as_view(), name='login'),"""
-)
+urlpatterns = [
+    url(r'^$', views.MainPage, name="index"),
+    url(r'^myprofile/$', views.ChangeOvenbird, name='myprofile'),
+    url(r'^ShowOvenbird/(?P<ovenbird_id>\d+)/$', ShowOvenbird.as_view(), name="showovenbird"),
+    url(r'^CreateObject/(?P<type>\d+)/$', views.CreateObject, name='createobject'),
+]

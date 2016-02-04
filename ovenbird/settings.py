@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'offsite',
     'registration',
+    'captcha',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -79,16 +80,6 @@ TEMPLATES = [
         },
     },
 ]
-"""TEMPLATES = [{
-    'BACKEND': 'django.template.backends.jinja2.Jinja2',
-    'DIRS': [
-        os.path.join(BASE_DIR, 'templates/jinja2'),
-    ],
-    'APP_DIRS': True,
-    'OPTIONS': {
-        'environment': '/virtualenv/ovenbird/Lib/site-packages/jinja2/jinja2.environment',
-    },
-},]"""
 
 WSGI_APPLICATION = 'ovenbird.wsgi.application'
 
@@ -136,7 +127,8 @@ AUTHENTICATION_BACKENDS = ['registration.backends.EmailAuthBackend', ]
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -152,11 +144,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-TEMPLATE_LOADERS = (
+"""TEMPLATE_LOADERS = (
     'django_jinja.loaders.AppLoader',
     'django_jinja.loaders.FileSystemLoader',
-
-)
+)"""
 
 if DEBUG:
     INTERNAL_IPS = ('127.0.0.1',)

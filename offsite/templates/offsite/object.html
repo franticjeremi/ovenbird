@@ -2,13 +2,12 @@
 <html>
   <head>
   	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Регистрация</title>
+    <title>Печники</title>
     <link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
-    <script type="text/javascript" src="/static/registration/js/registration.js"></script>
   </head>
   <body>
-    <div class="wrapper">
+	<div class="wrapper">
     	<div class="error">
     		<ul>
 				{% for field in form.visible_fields %}
@@ -27,7 +26,7 @@
       				{{ field.label_tag }}
     				{{ field }}
       		{% endfor %}
-      	<button type="submit">Зарегистрироваться</button>
+      	<button type="submit">Принять изменения</button>
     	</form>
     </div>
   </body>

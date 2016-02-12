@@ -37,7 +37,11 @@ class Object(models.Model):
     ovenbird = models.ForeignKey('Ovenbird')
     title = models.CharField(max_length=200)
     text = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, 
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
     type = models.PositiveSmallIntegerField()
     date_created = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)

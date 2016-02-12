@@ -1,6 +1,8 @@
 ﻿# -*- coding: utf-8 -*-
 from django import forms
 from offsite.models import Ovenbird, City, Object
+import logging
+logger = logging.getLogger(__name__)
 
 class OvenbirdForm(forms.ModelForm):
 
@@ -50,22 +52,34 @@ class ObjectForm(forms.ModelForm):
     )
     price = forms.DecimalField(
         label="Цена",
-        widget=forms.TextInput
+        widget=forms.TextInput,
+        required=False
     )
     type = forms.IntegerField(
-        widget=forms.HiddenInput
+        widget=forms.HiddenInput()
+    )
+    ovenbird = forms.IntegerField(
+        widget=forms.HiddenInput()
     )
 
     class Meta:
         model = Object
-        fields = ['title', 'text', 'price', 'type']
-        
-    def __init__(self, *args, **kwargs):
-        super(ObjectForm, self).__init__(*args, **kwargs)
-        self.fields['type'].initial = kwargs.pop('type', None)
-        
+        fields = ['title', 'text', 'price', 'type', 'ovenbird']
+
+    def clean_type(self):
+        data = self.cleaned_data['type']
+        if not data:
+            raise forms.ValidationError()
+        return data
+    
+    def clean_ovenbird(self):
+        data = Ovenbird.objects.get(id=self.cleaned_data['ovenbird'])
+        if not data:
+            raise forms.ValidationError()
+        return data
+    
     def save(self, commit=True):
         object = super(ObjectForm, self).save(commit=False)
         if commit:
             object.save()
-        return user
+        return object

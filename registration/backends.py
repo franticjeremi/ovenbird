@@ -25,5 +25,5 @@ class EmailAuthBackend(object):
             if user.is_active:
                 return user
             return None
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return None

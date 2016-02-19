@@ -15,10 +15,11 @@ class CustomUser(AbstractBaseUser):
     joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_ovenbird = models.BooleanField(default=False)
+    is_adser = models.BooleanField(default=False)
     
     class Meta:
         verbose_name = "Пользователь"
-    #objects = CustomUserManager()
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

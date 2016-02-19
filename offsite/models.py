@@ -3,14 +3,22 @@ from django.db import models
 # Create your models here.
 class Ovenbird(models.Model):
     name = models.CharField(max_length=200)
-    city = models.ForeignKey('City')
+    city = models.ForeignKey(
+        'City',
+        null=True,
+        blank=True
+    )
     telephone = models.CharField(max_length=13)
-    text = models.TextField()
+    text = models.TextField(null=True, blank=True)
     customuser = models.OneToOneField('registration.CustomUser', default=0)
     #photo = ImageField
-
-#class adser(models.Model):
-#    name = models.CharField(max_length=200)
+    
+class adser(models.Model):
+    balance = models.DecimalField(max_digits=10, 
+        decimal_places=2,
+        default=0
+    )
+    customuser = models.OneToOneField('registration.CustomUser', default=0)
 
 def get_upload_path(instance, filename):
     return "ovenbird_{%s}/{%s}" % (instance.user.id, filename)
@@ -52,3 +60,6 @@ class Region(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=50)
     region = models.ForeignKey('Region')
+    
+    def __str__(self):
+        return '%s' % (self.name)

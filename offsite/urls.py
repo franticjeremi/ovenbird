@@ -14,17 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from .views import ShowOvenbird, UpdateObject
+from .views import ShowOvenbird, UpdateObject, CreateObject, ShowObject, DeleteObject, CreateOvenbird, UpdateOvenbird
 from . import views
 #from offsite.views import AboutView
 
 urlpatterns = [
     url(r'^$', views.MainPage, name="index"),
-    url(r'^myprofile/$', views.ChangeOvenbird, name='myprofile'),
+    url(r'^myprofile/$', UpdateOvenbird.as_view(), name='myprofile'),
     url(r'^ShowOvenbird/(?P<ovenbird_id>\d+)/$', ShowOvenbird.as_view(), name="showovenbird"),
-    url(r'^CreateObject/$', views.CreateObject, name='createobject'),
+    url(r'^CreateOvenbird/$', CreateOvenbird.as_view(), name="createovenbird"),
+    url(r'^CreateObject/$', CreateObject.as_view(), name='createobject'),
     url(r'^CreateArticle/$', views.CreateArticle, name='createarticle'),
-    url(r'^ShowObject/(?P<object_id>\d+)/$', views.ShowObject, name='showobject'),
+    url(r'^ShowObject/(?P<pk>\d+)/$', ShowObject.as_view(), name='showobject'),
     url(r'^ShowArticle/(?P<article_id>\d+)/$', views.ShowArticle, name='showarticle'),
-    url(r'^UpdateObject/(?P<pk>\d+)/$', UpdateObject.as_view(), name='updateobject')
+    url(r'^UpdateObject/(?P<pk>\d+)/$', UpdateObject.as_view(), name='updateobject'),
+    url(r'^DeleteObject/(?P<pk>\d+)/$', DeleteObject.as_view(), name='deleteobject')
 ]

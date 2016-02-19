@@ -17,8 +17,12 @@
 	Объекты
 	<br/>
 	{% for object in objects %}
-		<a href="{% url 'offsite:updateobject' object.id %}">{{object.title}}</a>
+		<a href="{% url 'offsite:showobject' object.id %}">{{object.title}}</a>
 		{{object.text}}
+		{% if request.user.id == ovenbird.customuser_id %}
+			<a href="{% url 'offsite:updateobject' object.id %}">Изменить</a>
+			<a href="{% url 'offsite:deleteobject' object.id %}">Удалить</a>
+		{% endif %}
 		<br/>
 	{% endfor %}
 	Статьи

@@ -1,19 +1,21 @@
 ﻿# -*- coding: utf-8 -*-
 from django import forms
 from offsite.models import Ovenbird, City, Object
+from registration.models import CustomUser
 import logging
 logger = logging.getLogger(__name__)
 
 class OvenbirdForm(forms.ModelForm):
 
     name = forms.CharField(
-        label="Имя или название организации",
+        label="Имя или организация",
         widget=forms.TextInput
     )
-    city_id = forms.ModelChoiceField(
+    city = forms.ModelChoiceField(
         label="Город",
         queryset = City.objects.all(),
-        required=False
+        required=False,
+        to_field_name="id"
     )
     telephone = forms.CharField(
         label="Телефон",
@@ -21,18 +23,29 @@ class OvenbirdForm(forms.ModelForm):
     )
     text = forms.CharField(
         label="Информация",
-        widget=forms.Textarea
+        widget=forms.Textarea,
+        required=False,
+    )
+    customuser = forms.IntegerField(
+        widget=forms.HiddenInput()
     )
 
     class Meta:
         model = Ovenbird
-        fields = ['name', 'city', 'telephone', 'text']
+        fields = ['name', 'city', 'telephone', 'text', 'customuser']
+        
         
     def __init__(self, *args, **kwargs):
         city = kwargs.pop('city', None)
         super(OvenbirdForm, self).__init__(*args, **kwargs)
         if city:
             self.fields['city'].queryset = City.objects.filter(id=city)
+            
+    def clean_customuser(self):
+        data = CustomUser.objects.get(id=self.cleaned_data['customuser'])
+        if not data:
+            raise forms.ValidationError()
+        return data
             
     def save(self, commit=True):
         user = super(OvenbirdForm, self).save(commit=False)

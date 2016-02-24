@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 from django import forms
-from offsite.models import Ovenbird, City, Object
+from offsite.models import Ovenbird, City, Object, Photography
 from registration.models import CustomUser
 import logging
 logger = logging.getLogger(__name__)
@@ -93,6 +93,48 @@ class ObjectForm(forms.ModelForm):
     
     def save(self, commit=True):
         object = super(ObjectForm, self).save(commit=False)
+        if commit:
+            object.save()
+        return object
+    
+class FileUploadForm(forms.ModelForm):
+    
+    ovenbird = forms.IntegerField(
+        widget=forms.HiddenInput()
+    )
+    object = forms.IntegerField(
+        widget=forms.HiddenInput()
+    )
+    title = forms.CharField(
+        label="Заголовок",
+        widget=forms.TextInput
+    )
+    description = forms.CharField(
+        label="Текст",
+        widget=forms.Textarea
+    )
+
+    image = forms.ImageField(label="Изображение")
+    
+    class Meta:
+        model = Photography
+        fields = ['title', 'description', 'image', 'object', 'ovenbird']
+        
+    def clean_ovenbird(self):
+        data = Ovenbird.objects.get(id=self.cleaned_data['ovenbird'])
+        if not data:
+            raise forms.ValidationError()
+        return data
+    
+    def clean_object(self):
+        data = Object.objects.get(id=self.cleaned_data['object'])
+        logger.warn(self)
+        if not data:
+            raise forms.ValidationError()
+        return data
+    
+    def save(self, commit=True):
+        object = super(FileUploadForm, self).save(commit=False)
         if commit:
             object.save()
         return object

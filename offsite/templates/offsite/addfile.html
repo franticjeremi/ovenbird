@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Печники</title>
+    <link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
+  </head>
+  <body>
+	<div class="wrapper">
+    	<div class="error">
+    		<ul>
+				{% for field in form.visible_fields %}
+    				{% for err in field.errors %}
+    				<li>
+    					{{ field.label }}:
+    					{{ err }}
+    				</li>
+    				{% endfor %}
+				{% endfor %}
+			</ul>
+		</div>
+    	<form action="" method="post" class="auth" enctype="multipart/form-data">
+    		{% csrf_token %}
+      		{% for field in form.visible_fields %}
+      				{{ field.label_tag }}
+    				{{ field }}
+      		{% endfor %}
+      	<button type="submit">Принять изменения</button>
+    	</form>
+    </div>
+  </body>
+</html>

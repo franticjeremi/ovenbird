@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from .forms import RegistrationForm, MyAuthenticationForm
 from django.shortcuts import render_to_response, redirect
-from offsite.models import Ovenbird
+from offsite.models import Ovenbird, Adser
 from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 import logging
@@ -36,15 +36,19 @@ def registrationUser(request):
 def login(request):
     if request.method == 'POST':
         form = MyAuthenticationForm(data=request.POST)
-        logger.warning(request.POST)
         if form.is_valid():
             user = authenticate(email=request.POST['email'], password=request.POST['password'])
             if user is not None:
                 if user.is_active:
-                    ovenbird = Ovenbird.objects.filter(customuser_id = user.id).first()
                     django_login(request, user)
-                    if ovenbird is None:
-                        return redirect('/offsite/CreateOvenbird')
+                    if user.is_adser:
+                        adser = Adser.objects.filter(customuser_id = user.id).first()
+                        if adser is None:
+                            Adser.objects.create(balance=0, customuser=user)
+                    if user.is_ovenbird:
+                        ovenbird = Ovenbird.objects.filter(customuser_id = user.id).first()
+                        if ovenbird is None:
+                            return redirect('/offsite/CreateOvenbird')
                     return redirect('/offsite/')
                         
     else:

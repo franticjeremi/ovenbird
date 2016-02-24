@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-from .models import Ovenbird, Object
+from .models import Ovenbird, Object, Photography
 from django.shortcuts import render, render_to_response, redirect, get_object_or_404, HttpResponseRedirect
 from django.http import Http404
 from django.core.urlresolvers import reverse 
@@ -7,21 +7,38 @@ from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.template import RequestContext
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import OvenbirdForm, ObjectForm
+from .forms import OvenbirdForm, ObjectForm, FileUploadForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.conf import settings
+from django.http import JsonResponse
 import logging
 logger = logging.getLogger(__name__)
-# Create your views here.
-    
-#class AboutView(TemplateView):
-#    template_name = "jinja2/index.jinja"
 
 # добавляет для метода диспатч декоратор проверки аутентификации
 class LoginRequiredMixin(object):
     @method_decorator(login_required(login_url='/registration/login'))
     def dispatch(self, request, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+# миксин для работы с аякс-запросами
+class AjaxableResponseMixin(object):
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            data = {
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response
     
 # main page
 def MainPage(request):
@@ -100,12 +117,11 @@ class ShowOvenbird(ListView):
 class ShowObject(DetailView):
     model = Object
     template_name = "offsite/showobject.html"
+    context_object_name = 'object'
     
     def get_context_data(self, **kwargs):
         context = super(ShowObject, self).get_context_data(**kwargs)
-        context['object'] = get_object_or_404(Object,
-            id = self.kwargs['pk']
-        )
+        context['photos'] = Photography.objects.filter(object_id=self.kwargs['pk'])
         return context
 
 class CreateObject(LoginRequiredMixin, CreateView):
@@ -161,15 +177,9 @@ class UpdateObject(LoginRequiredMixin, UpdateView):
             return HttpResponseRedirect(self.get_success_url(object.ovenbird_id))
         return super(UpdateObject, self).post(request, **kwargs)
 
-class DeleteObject(LoginRequiredMixin, DeleteView):
+class DeleteObject(AjaxableResponseMixin, LoginRequiredMixin, DeleteView):
     model = Object
-    
-    def get_success_url(self):
-        success_url = reverse(
-            'offsite:showovenbird', 
-            kwargs={'ovenbird_id': self.request.session['ovenbird_id']}
-        )
-    
+   
     def get_queryset(self):
         queryset = Object.objects.filter(
             id = self.kwargs['pk'], 
@@ -197,4 +207,20 @@ def ShowArticle(request, pk):
     return render_to_response('offsite/object.html', {
         'form': form,
         }, context_instance=RequestContext(request))
+
+class AddFile(LoginRequiredMixin, CreateView):
+    template_name = "offsite/addfile.html"
+    form_class = FileUploadForm
+    model = Photography
+    
+    def post(self, request, *args, **kwargs):
+        post_values = request.POST.copy()
+        post_values['object'] = kwargs['pk']
+        post_values['ovenbird'] = request.session['ovenbird_id']
+        form = FileUploadForm(post_values, request.FILES)
+        logger.warn(post_values['image'])
+        """if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/offsite/')"""
+        return super(AddFile, self).post(request, **kwargs)
 

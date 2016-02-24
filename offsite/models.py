@@ -1,6 +1,7 @@
 from django.db import models
+import os
+from django.conf import settings
 
-# Create your models here.
 class Ovenbird(models.Model):
     name = models.CharField(max_length=200)
     city = models.ForeignKey(
@@ -8,12 +9,16 @@ class Ovenbird(models.Model):
         null=True,
         blank=True
     )
-    telephone = models.CharField(max_length=13)
+    telephone = models.CharField(
+        max_length=13,
+        null=True,
+        blank=True
+    )
     text = models.TextField(null=True, blank=True)
     customuser = models.OneToOneField('registration.CustomUser', default=0)
     #photo = ImageField
     
-class adser(models.Model):
+class Adser(models.Model):
     balance = models.DecimalField(max_digits=10, 
         decimal_places=2,
         default=0
@@ -21,20 +26,27 @@ class adser(models.Model):
     customuser = models.OneToOneField('registration.CustomUser', default=0)
 
 def get_upload_path(instance, filename):
-    return "ovenbird_{%s}/{%s}" % (instance.user.id, filename)
+    return os.path.join(settings.MEDIA_ROOT, "ovenbird_%d/object_%d/%s" % (instance.ovenbird.id, instance.object.id, filename))
 
 # create path to image file for current user
-class Photo(models.Model):
+class Photography(models.Model):
     ovenbird = models.ForeignKey('Ovenbird')
-    ovenbird = models.ForeignKey('Object')
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    object = models.ForeignKey('Object')
+    title = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True
+    )
+    description = models.TextField(
+        null=True, 
+        blank=True
+    )
     date_created = models.DateField(auto_now_add=True)
     image = models.ImageField(upload_to=get_upload_path)
     
 class Video(models.Model):
     ovenbird = models.ForeignKey('Ovenbird')
-    ovenbird = models.ForeignKey('Object')
+    object = models.ForeignKey('Object')
     title = models.CharField(max_length=200)
     description = models.TextField()
     date_created = models.DateField(auto_now_add=True)
@@ -56,6 +68,9 @@ class Object(models.Model):
     
 class Region(models.Model):
     name = models.CharField(max_length=70)
+    
+    def __str__(self):
+        return '%s' % (self.name)
     
 class City(models.Model):
     name = models.CharField(max_length=50)

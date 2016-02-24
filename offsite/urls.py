@@ -14,7 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from .views import ShowOvenbird, UpdateObject, CreateObject, ShowObject, DeleteObject, CreateOvenbird, UpdateOvenbird
+from .views import ShowOvenbird, UpdateObject, CreateObject, ShowObject, DeleteObject
+from .views import CreateOvenbird, UpdateOvenbird, AddFile
 from . import views
 #from offsite.views import AboutView
 
@@ -28,5 +29,6 @@ urlpatterns = [
     url(r'^ShowObject/(?P<pk>\d+)/$', ShowObject.as_view(), name='showobject'),
     url(r'^ShowArticle/(?P<article_id>\d+)/$', views.ShowArticle, name='showarticle'),
     url(r'^UpdateObject/(?P<pk>\d+)/$', UpdateObject.as_view(), name='updateobject'),
-    url(r'^DeleteObject/(?P<pk>\d+)/$', DeleteObject.as_view(), name='deleteobject')
+    url(r'^DeleteObject/(?P<pk>\d+)/$', DeleteObject.as_view(), name='deleteobject'),
+    url(r'^AddFile/(?P<pk>\d+)/$', AddFile.as_view(), name='addfile')
 ]

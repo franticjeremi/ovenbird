@@ -7,6 +7,7 @@
   <body>
   	{% if request.user.email %}
   	    {{ request.user.email }}
+  	    <a href="{% url 'offsite:showovenbird' request.session.ovenbird_id %}">Мой профиль</a>
   	    <a href="{% url 'offsite:myprofile' %}">Изменить профиль</a>
   	    <a href="{% url 'registration:logout' %}">Выйти</a>
   	{% else %}

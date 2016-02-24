@@ -11,5 +11,12 @@
     <br/>
     {{ object.text }}
     <br/>
+    Фотографии
+    <br/>
+    {% for photo in photos %}
+    	{{photo.title}}
+    	<br/>
+    	<img src="{{MEDIA_URL}}/{{photo.image}}" alt="d"/> 
+    {% endfor %} 
   </body>
 </html>

@@ -14,8 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
-from django.contrib import admin
 from django.conf import settings
+from django.contrib import admin
 from django.conf.urls.static import static
 
 urlpatterns = [
@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^offsite/', include('offsite.urls', namespace='offsite')),
     url(r'^registration/', include('registration.urls', namespace='registration')),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^tinymce/', include('tinymce.urls')),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# для отображения изображениц
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

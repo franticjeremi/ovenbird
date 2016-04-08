@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    	<title>Печники</title>
+    	<link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
+    	<script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
+    	<script type="text/javascript" src="/static/offsite/js/main.js"></script>
+    	<style type="text/css">
+    	.delete-row {
+        	display:block;
+        	margin:6px 0 0 0;
+        	padding-left:18px;
+        	background:url(/static/offsite/images/delete.png) no-repeat left center;
+    	}
+		</style>
+  	</head>
+	<body>
+		<div id="id_empty_form" style="display:none;">
+       		<textarea></textarea>
+       		<br/>
+       		<img name="{{MEDIA_URL}}" alt="d"/>
+       		<a class="delete-row" href="{% url 'offsite:deletefile' 0 %}">Удалить</a>
+    	</div>
+    	Фотографии
+    	<br/>
+    	<form action="" method="post" class="auth">
+    		<input id="addimage" type="file" multiple accept="image/*" name="addimage">
+    		<br/>
+    		{% for photo in photos %}
+    			<div id="id_empty_form">
+    				<textarea>{{photo.description}}</textarea>
+    				<br/>
+    				<img name="{{MEDIA_URL}}" src="{{MEDIA_URL}}{{photo.image}}" alt="d"/>
+    				<a class="delete-row" href="{% url 'offsite:deletefile' photo.id %}">Удалить</a>
+    				<a class="get-objects" href="{% url 'offsite:getlistobjects' %}" id="{{photo.id}}">Добавить к объекту</a><p></p>
+    				<a class="get-joined-objects" href="{% url 'offsite:getlistjoinedobjects' photo.id %}" id="{{photo.id}}">Убрать из объекта</a><p></p>
+    				<a class="get-objects-for-title-photo" href="{% url 'offsite:getlistobjects' %}" id="{{photo.id}}">Сделать главной для объекта</a><p></p>
+    				<a class="set-photo-for-ovenbird" href="{% url 'offsite:setovenbirdphoto' photo.id %}">Сделать главной для печника</a><p></p>
+    			</div>
+    		{% endfor %}
+    	</form>
+	</body>
+</html>

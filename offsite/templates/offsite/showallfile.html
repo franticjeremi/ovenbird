@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    	<title>Печники</title>
+    	<link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
+    	<script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
+    	<script type="text/javascript" src="/static/offsite/js/main.js"></script>
+  	</head>
+	<body>
+		<div id="id_empty_form" style="display:none;">
+    		<input class="check-photo" type="checkbox" id="0/{{object_id}}">
+    		<img name="{{MEDIA_URL}}" alt="d"/>
+    	</div>
+	Фотографии
+		<form action="" method="post" class="auth">
+	   		{% for photo in photos %}
+    			<div>
+    				<input class="check-photo" type="checkbox" id="{{photo.id}}/{{object_id}}"
+    				{% if photo.object.all|length > 0 %}
+  						checked
+					{% endif %}>
+    				<img name="{{MEDIA_URL}}" src="{{MEDIA_URL}}{{photo.image}}" alt="d"/>
+    			</div>
+    		{% endfor %}
+    		{% for object in objects %}
+    			<a class="get-photos" href="{% url 'offsite:getlistfiles' object.id object_id %}">{{object.title}}</a>
+    			<br/>
+    		{% endfor %}
+    	</form>
+	</body>
+</html>

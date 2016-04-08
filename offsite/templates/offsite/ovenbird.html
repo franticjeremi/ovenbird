@@ -12,26 +12,31 @@
 	{% if request.user.id == ovenbird.customuser_id %}
 		<a href="{% url 'offsite:createobject' %}">Создать новый объект</a>
 		<a href="{% url 'offsite:createarticle' %}">Создать новую статью</a>
+		<a href="{% url 'offsite:showfile' %}">Добавить фотографии</a>
 	{% endif %}
 	<br/>
 	Объекты
 	<br/>
 	{% for object in objects %}
+	<div class="objects">
 		<a href="{% url 'offsite:showobject' object.id %}">{{object.title}}</a>
-		{{object.text}}
+		{{object.text | striptags }}
 		{% if request.user.id == ovenbird.customuser_id %}
-			<a href="{% url 'offsite:updateobject' object.id %}">Изменить</a>
-			<a href="{% url 'offsite:deleteobject' object.id %}">Удалить</a>
+			<a id={{object.id}} href="{% url 'offsite:updateobject' object.id %}">Изменить</a>
+			<a id={{object.id}} href="{% url 'offsite:showallfile' object.id %}">Добавить фотографии</a>
+			<a id={{object.id}} class="delete" href="{% url 'offsite:deleteobject' object.id %}">Удалить</a>
 		{% endif %}
-		<br/>
+	</div>
 	{% endfor %}
 	Статьи
 	<br/>
 	{% for article in articles %}
 		<a href="{% url 'offsite:updateobject' article.id %}">{{article.title}}</a>
-		{{article.text}}
+		{{article.text | striptags }}
 		<br/>
 	{% endfor %}
-    
+	<div id="results"></div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="/static/offsite/js/main.js"></script>
   </body>
 </html>

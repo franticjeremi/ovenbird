@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Печники</title>
+    <link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
+  </head>
+  <body>
+  <a href="{{request.META.HTTP_REFERER}}">Назад</a>
+  	<br/>
+	{{ adser.balance }}
+	<br/>
+	<a href="{% url 'offsite:createads' %}">Создать новую рекламу</a>
+	<br/>
+	Рекламные проекты
+	<br/>
+	{% for ads in adses %}
+	<div class="ads">
+		{{ads.title}} 
+		<a data-id={{ads.id}} href="{% url 'offsite:updateads' ads.id %}">Изменить</a>
+		<a data-id={{ads.id}} class="delete" href="{% url 'offsite:deleteads' ads.id %}">Удалить</a>
+		<br/>
+	</div>
+	{% endfor %}
+	<div class="pagination">
+    	<span class="step-links">
+        {% if adses.has_previous %}
+            <a href="?page={{ adses.previous_page_number }}">предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ adses.number }} из {{ adses.paginator.num_pages }}.
+        </span>
+
+        {% if adses.has_next %}
+            <a href="?page={{ adses.next_page_number }}">следующая</a>
+        {% endif %}
+    	</span>
+	</div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="/static/offsite/js/main.js"></script>
+  </body>
+</html>

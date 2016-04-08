@@ -5,6 +5,7 @@ from .forms import RegistrationForm, MyAuthenticationForm
 from django.shortcuts import render_to_response, redirect
 from offsite.models import Ovenbird, Adser
 from django.template import RequestContext
+from django.views.decorators.cache import never_cache
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 import logging
 logger = logging.getLogger(__name__)
@@ -33,26 +34,27 @@ def registrationUser(request):
         'form': form,
     }, context_instance=RequestContext(request))
 
+@csrf_protect
+@never_cache
 def login(request):
+    form = MyAuthenticationForm(data=request.POST or None)
     if request.method == 'POST':
-        form = MyAuthenticationForm(data=request.POST)
         if form.is_valid():
             user = authenticate(email=request.POST['email'], password=request.POST['password'])
             if user is not None:
                 if user.is_active:
                     django_login(request, user)
+                    if user.is_staff:
+                        return redirect('/admin')
                     if user.is_adser:
-                        adser = Adser.objects.filter(customuser_id = user.id).first()
+                        adser = Adser.objects.get(customuser_id = user.id)
                         if adser is None:
                             Adser.objects.create(balance=0, customuser=user)
                     if user.is_ovenbird:
-                        ovenbird = Ovenbird.objects.filter(customuser_id = user.id).first()
+                        ovenbird = Ovenbird.objects.get(customuser_id = user.id)
                         if ovenbird is None:
                             return redirect('/offsite/CreateOvenbird')
                     return redirect('/offsite/')
-                        
-    else:
-        form = MyAuthenticationForm()
     return render_to_response('registration/login.html', {
         'form': form,
     }, context_instance=RequestContext(request))

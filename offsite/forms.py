@@ -1,7 +1,9 @@
 ﻿# -*- coding: utf-8 -*-
 from django import forms
-from offsite.models import Ovenbird, City, Object, Photography
+from offsite.models import Ovenbird, City, Object, Photo, Ads, Adser
 from registration.models import CustomUser
+from django.forms.models import formset_factory
+from tinymce.widgets import TinyMCE
 import logging
 logger = logging.getLogger(__name__)
 
@@ -61,7 +63,7 @@ class ObjectForm(forms.ModelForm):
     )
     text = forms.CharField(
         label="Текст",
-        widget=forms.Textarea
+        widget=TinyMCE(attrs={'cols': 75, 'rows': 20})
     )
     price = forms.DecimalField(
         label="Цена",
@@ -103,38 +105,59 @@ class FileUploadForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
     object = forms.IntegerField(
-        widget=forms.HiddenInput()
-    )
-    title = forms.CharField(
-        label="Заголовок",
-        widget=forms.TextInput
+        widget=forms.HiddenInput(),
+        required=False
     )
     description = forms.CharField(
-        label="Текст",
-        widget=forms.Textarea
+        label="Описание",
+        widget=forms.Textarea,
+        required = False
     )
 
     image = forms.ImageField(label="Изображение")
     
     class Meta:
-        model = Photography
-        fields = ['title', 'description', 'image', 'object', 'ovenbird']
+        model = Photo
+        fields = ['description', 'image', 'object', 'ovenbird']
         
     def clean_ovenbird(self):
         data = Ovenbird.objects.get(id=self.cleaned_data['ovenbird'])
         if not data:
             raise forms.ValidationError()
         return data
+   
+    def save(self, commit=True):
+        object = super(FileUploadForm, self).save(commit=False)
+        if commit:
+            object.save()
+        return object
     
-    def clean_object(self):
-        data = Object.objects.get(id=self.cleaned_data['object'])
-        logger.warn(self)
+class AdsForm(forms.ModelForm):
+    title = forms.CharField(
+        label="Заголовок",
+        widget=forms.TextInput
+    )
+    image = forms.ImageField(label="Изображение")
+    link = forms.CharField(
+        label="Сслыка на сайт",
+        widget=forms.TextInput,
+        required=False
+    )
+    adser = forms.IntegerField(
+        widget=forms.HiddenInput()
+    )
+    class Meta:
+        model = Ads
+        fields = ['title', 'image', 'link', 'adser']
+        
+    def clean_adser(self):
+        data = Adser.objects.get(id=self.cleaned_data['adser'])
         if not data:
             raise forms.ValidationError()
         return data
-    
+   
     def save(self, commit=True):
-        object = super(FileUploadForm, self).save(commit=False)
+        object = super(AdsForm, self).save(commit=False)
         if commit:
             object.save()
         return object

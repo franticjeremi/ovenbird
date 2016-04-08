@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'offsite',
     'registration',
     'captcha',
+    'tinymce',
 ]
 
 MIDDLEWARE_CLASSES = [
+    'offsite.middleware.TrackUsersMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,7 +57,7 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'ovenbird.urls'
 
-TEMPLATES = [
+"""TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [
@@ -79,6 +81,22 @@ TEMPLATES = [
             ],
         },
     },
+]"""
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+            ],
+        },
+    },
 ]
 
 WSGI_APPLICATION = 'ovenbird.wsgi.application'
@@ -95,7 +113,7 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '5432',
-    }
+    },
 }
 """DATABASES = {
     'default': {
@@ -122,7 +140,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'registration.CustomUser'
-AUTHENTICATION_BACKENDS = ['registration.backends.EmailAuthBackend', ]
+AUTHENTICATION_BACKENDS = [
+    'registration.backends.EmailAuthBackend', 
+    'django.contrib.auth.backends.ModelBackend'
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -139,7 +161,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
@@ -152,6 +174,64 @@ STATIC_URL = '/static/'
     'django_jinja.loaders.AppLoader',
     'django_jinja.loaders.FileSystemLoader',
 )"""
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'relative_urls': False,
+    'plugins': 'media, autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template',
+    'theme_advanced_buttons1': 'bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,sub,sup,|,forecolor,backcolor,formatselect,fontsizeselect',
+    'theme_advanced_buttons2': 'outdent,indent,|,undo,redo,|,link,unlink,anchor,image,tablecontrols,removeformat,code',
+    'theme_advanced_resizing': True,
+    'theme_advanced_path': False,
+    'theme_advanced_toolbar_location' : 'top',
+    'theme_advanced_toolbar_align' : 'left',
+    'theme_advanced_statusbar_location' : 'bottom',
+    'paste_text_sticky': True,
+    'paste_text_sticky_default' : True,
+    'valid_styles' : 'font-weight,font-style,text-decoration',
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'mysite.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+        },
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'WARN',
+            'propagate': False,
+        },
+        'offsite': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+        },
+        'registration': {
+            'registration': ['file'],
+            'level': 'ERROR',
+        },
+                
+    }
+}
 
 if DEBUG:
     INTERNAL_IPS = ('127.0.0.1',)

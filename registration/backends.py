@@ -16,7 +16,7 @@ class EmailAuthBackend(object):
             user = CustomUser.objects.get(email=email)
             if user.check_password(password):
                 return user
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return None
 
     def get_user(self, user_id):
@@ -27,3 +27,9 @@ class EmailAuthBackend(object):
             return None
         except CustomUser.DoesNotExist:
             return None
+        
+    """def has_perm(self, user_obj, perm, obj=None):
+        if user_obj.username == settings.ADMIN_LOGIN:
+            return True
+        else:
+            return False"""

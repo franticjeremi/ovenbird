@@ -5,8 +5,42 @@
     <title>Печники</title>
     <link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="/static/offsite/js/jquery.formset.js"></script>
+    <script type="text/javascript" src="/static/offsite/js/main.js"></script>
+    <script type="text/javascript">
+        /*$(function() {
+        	$('form fieldset').formset({
+                formTemplate: '#id_empty_form'
+            });
+        })*/
+    </script>
+    <style type="text/css">
+    .add-row {
+        padding-left:18px;
+        background:url(/static/offsite/images/add.png) no-repeat left center;
+    }
+    .delete-row {
+        display:block;
+        margin:6px 0 0 0;
+        padding-left:18px;
+        background:url(/static/offsite/images/delete.png) no-repeat left center;
+    }
+    .dynamic-form {
+        margin-bottom:6px;
+        padding-bottom:6px;
+        border-bottom:1px dotted #ccc;
+    }
+</style>
+  {{ form.media }}
   </head>
   <body>
+  			<!-- {% with fileform.empty_form as form %}
+        		<div id="id_empty_form" style="display:none;">
+        			<p></p>
+            		{{ form.description }}
+            		<a class="delete-row" href=>Удалить</a>
+        		</div>
+        	{% endwith %}-->
 	<div class="wrapper">
     	<div class="error">
     		<ul>

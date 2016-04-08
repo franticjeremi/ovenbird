@@ -7,8 +7,13 @@
   <body>
   	{% if request.user.email %}
   	    {{ request.user.email }}
-  	    <a href="{% url 'offsite:showovenbird' request.session.ovenbird_id %}">Мой профиль</a>
-  	    <a href="{% url 'offsite:myprofile' %}">Изменить профиль</a>
+  	    {% if request.session.ovenbird_id %}
+  	    	<a href="{% url 'offsite:showovenbird' request.session.ovenbird_id %}">Мой профиль</a>
+  	    	<a href="{% url 'offsite:myprofile' %}">Изменить профиль</a>
+  	    {% endif %}
+  	    {% if request.session.adser_id %}
+  	    	<a href="{% url 'offsite:showadser' %}">Просмотр рекламы</a>
+  	    {% endif %}
   	    <a href="{% url 'registration:logout' %}">Выйти</a>
   	{% else %}
     <a href="{% url 'registration:register' %}">Зарегистрироваться</a>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -13,16 +13,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CustomUser',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
-                ('password', models.CharField(verbose_name='password', max_length=128)),
-                ('last_login', models.DateTimeField(verbose_name='last login', null=True, blank=True)),
-                ('email', models.EmailField(verbose_name='email', max_length=255, db_index=True, unique=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(null=True, blank=True, verbose_name='last login')),
+                ('email', models.EmailField(db_index=True, default='nobody', max_length=255, verbose_name='Электронная почта', unique=True)),
                 ('joined', models.DateTimeField(auto_now_add=True)),
                 ('is_active', models.BooleanField(default=True)),
-                ('is_admin', models.BooleanField(default=False)),
+                ('is_staff', models.BooleanField(default=False)),
+                ('is_ovenbird', models.BooleanField(default=False)),
+                ('is_adser', models.BooleanField(default=False)),
             ],
             options={
-                'abstract': False,
+                'verbose_name': 'Пользователь',
             },
         ),
     ]

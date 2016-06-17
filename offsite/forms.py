@@ -1,11 +1,19 @@
 ﻿# -*- coding: utf-8 -*-
 from django import forms
-from offsite.models import Ovenbird, City, Object, Photo, Ads, Adser
+from offsite.models import Ovenbird, Location, Object, Photo, Ads, Filter
 from registration.models import CustomUser
-from django.forms.models import formset_factory
+from django.contrib.auth.models import Group
 from tinymce.widgets import TinyMCE
 import logging
 logger = logging.getLogger(__name__)
+
+from django.utils.translation import ugettext as _
+
+from django_select2.forms import (
+    HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
+    ModelSelect2TagWidget, ModelSelect2Widget, Select2MultipleWidget,
+    Select2Widget
+)
 
 class OvenbirdForm(forms.ModelForm):
 
@@ -13,15 +21,16 @@ class OvenbirdForm(forms.ModelForm):
         label="Имя или организация",
         widget=forms.TextInput
     )
-    city = forms.ModelChoiceField(
+    location = forms.ModelChoiceField(
         label="Город",
-        queryset = City.objects.all(),
+        queryset = Location.objects.filter(children__id__isnull=True),
         required=False,
         to_field_name="id"
     )
     telephone = forms.CharField(
         label="Телефон",
-        widget=forms.TextInput
+        widget=forms.TextInput,
+        required=False
     )
     text = forms.CharField(
         label="Информация",
@@ -31,17 +40,16 @@ class OvenbirdForm(forms.ModelForm):
     customuser = forms.IntegerField(
         widget=forms.HiddenInput()
     )
+    group = forms.ModelMultipleChoiceField(
+        label="Группы",
+        queryset = Group.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False,
+    )
 
     class Meta:
         model = Ovenbird
-        fields = ['name', 'city', 'telephone', 'text', 'customuser']
-        
-        
-    def __init__(self, *args, **kwargs):
-        city = kwargs.pop('city', None)
-        super(OvenbirdForm, self).__init__(*args, **kwargs)
-        if city:
-            self.fields['city'].queryset = City.objects.filter(id=city)
+        fields = ['name', 'location', 'telephone', 'text', 'customuser',]
             
     def clean_customuser(self):
         data = CustomUser.objects.get(id=self.cleaned_data['customuser'])
@@ -73,13 +81,25 @@ class ObjectForm(forms.ModelForm):
     type = forms.IntegerField(
         widget=forms.HiddenInput()
     )
-    ovenbird = forms.IntegerField(
+    customuser = forms.IntegerField(
         widget=forms.HiddenInput()
+    )
+    filter_link = forms.ModelMultipleChoiceField(
+        label="Фильтр",
+        required=False,
+        widget=Select2MultipleWidget(attrs={'style': 'width:200px'}),
+        queryset = Filter.objects.all(),
     )
 
     class Meta:
         model = Object
-        fields = ['title', 'text', 'price', 'type', 'ovenbird']
+        fields = ['title', 'text', 'price', 'type', 'customuser', 'filter_link',]
+        
+    def __init__(self, *args, **kwargs):
+        super(ObjectForm, self).__init__(*args, **kwargs)
+        if 'type' in self.initial:
+            if self.initial['type'] != 1:
+                self.fields['price'].widget = forms.HiddenInput()
 
     def clean_type(self):
         data = self.cleaned_data['type']
@@ -87,8 +107,8 @@ class ObjectForm(forms.ModelForm):
             raise forms.ValidationError()
         return data
     
-    def clean_ovenbird(self):
-        data = Ovenbird.objects.get(id=self.cleaned_data['ovenbird'])
+    def clean_customuser(self):
+        data = CustomUser.objects.get(id=self.cleaned_data['customuser'])
         if not data:
             raise forms.ValidationError()
         return data
@@ -101,7 +121,7 @@ class ObjectForm(forms.ModelForm):
     
 class FileUploadForm(forms.ModelForm):
     
-    ovenbird = forms.IntegerField(
+    customuser = forms.IntegerField(
         widget=forms.HiddenInput()
     )
     object = forms.IntegerField(
@@ -118,10 +138,10 @@ class FileUploadForm(forms.ModelForm):
     
     class Meta:
         model = Photo
-        fields = ['description', 'image', 'object', 'ovenbird']
+        fields = ['description', 'image', 'object', 'customuser']
         
-    def clean_ovenbird(self):
-        data = Ovenbird.objects.get(id=self.cleaned_data['ovenbird'])
+    def clean_customuser(self):
+        data = CustomUser.objects.get(id=self.cleaned_data['customuser'])
         if not data:
             raise forms.ValidationError()
         return data
@@ -143,15 +163,32 @@ class AdsForm(forms.ModelForm):
         widget=forms.TextInput,
         required=False
     )
-    adser = forms.IntegerField(
+    customuser = forms.IntegerField(
         widget=forms.HiddenInput()
+    )
+    auto_payment = forms.BooleanField(
+        widget=forms.CheckboxInput(),
+        initial = True,
+        label="Авто продление оплаты",
+    )
+    location = forms.ModelChoiceField(
+        label="Город",
+        queryset = Location.objects.all(),
+        required=False,
+        to_field_name="id"
+    )
+    filter_link = forms.ModelMultipleChoiceField(
+        label="Фильтр",
+        required=False,
+        widget=Select2MultipleWidget(attrs={'style': 'width:200px'}),
+        queryset = Filter.objects.all(),
     )
     class Meta:
         model = Ads
-        fields = ['title', 'image', 'link', 'adser']
+        fields = ('title', 'image', 'link', 'customuser', 'location', 'filter_link', 'auto_payment',)
         
-    def clean_adser(self):
-        data = Adser.objects.get(id=self.cleaned_data['adser'])
+    def clean_customuser(self):
+        data = CustomUser.objects.get(id=self.cleaned_data['customuser'])
         if not data:
             raise forms.ValidationError()
         return data

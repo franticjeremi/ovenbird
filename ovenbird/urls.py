@@ -19,11 +19,15 @@ from django.contrib import admin
 from django.conf.urls.static import static
 
 urlpatterns = [
+    url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^offsite/', include('offsite.urls', namespace='offsite')),
     url(r'^registration/', include('registration.urls', namespace='registration')),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^accounts/', include('allauth.urls')),
+    url(r'^select2/', include('django_select2.urls')),
+    url(r'^comments/', include('django_comments.urls')),
 ]
 # для отображения изображениц
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Django settings for ovenbird project.
 
@@ -31,16 +32,32 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'offsite',
     'registration',
     'captcha',
     'tinymce',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.vk',
+    'mptt',
+    'django_select2',
+    'django_comments',
+    'comment_app',
+    'vote',
+    'compressor',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -53,6 +70,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'offsite.middleware.GetUserId',
 ]
 
 ROOT_URLCONF = 'ovenbird.urls'
@@ -86,7 +104,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -94,6 +112,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'django.core.context_processors.request',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                'admin_tools.template_loaders.Loader',
             ],
         },
     },
@@ -108,7 +132,7 @@ WSGI_APPLICATION = 'ovenbird.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ovenbird',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
@@ -142,7 +166,8 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'registration.CustomUser'
 AUTHENTICATION_BACKENDS = [
     'registration.backends.EmailAuthBackend', 
-    'django.contrib.auth.backends.ModelBackend'
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 
@@ -168,12 +193,40 @@ MEDIA_URL = '/media/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+# admin tools
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+ADMIN_TOOLS_INDEX_DASHBOARD = 'admin-tools.dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'admin-tools.dashboard.CustomAppIndexDashboard'
+ADMIN_TOOLS_MENU = 'admin-tools.menu.CustomMenu'
+
+# oauth2
+SITE_ID = 1
+ACCOUNT_USER_MODEL_USERNAME_FIELD='email'
+LOGIN_REDIRECT_URL = '/offsite/'
+SOCIALACCOUNT_PROVIDERS = \
+    { 'google':
+        { 'SCOPE': ['email'],
+          'AUTH_PARAMS': { 'access_type': 'online' } 
+        },
+      'vk':
+        { 'SCOPE': ['email'],
+          'AUTH_PARAMS': { 'access_type': 'online' } 
+        },
+    }
 
 """TEMPLATE_LOADERS = (
     'django_jinja.loaders.AppLoader',
     'django_jinja.loaders.FileSystemLoader',
 )"""
+
 
 TINYMCE_DEFAULT_CONFIG = {
     'theme': 'advanced',
@@ -190,6 +243,23 @@ TINYMCE_DEFAULT_CONFIG = {
     'paste_text_sticky_default' : True,
     'valid_styles' : 'font-weight,font-style,text-decoration',
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    },
+    'select2': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+# Set the cache backend to select2
+SELECT2_CACHE_BACKEND = 'select2'
+
+# моё приложение для комментариев
+COMMENTS_APP = 'comment_app'
 
 LOGGING = {
     'version': 1,
@@ -232,6 +302,14 @@ LOGGING = {
                 
     }
 }
+
+# компрессор
+COMPRESS_ENABLED = True
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-sass', 'django_libsass.SassCompiler'),
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
 
 if DEBUG:
     INTERNAL_IPS = ('127.0.0.1',)

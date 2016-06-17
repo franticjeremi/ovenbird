@@ -1,6 +1,18 @@
 ﻿# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import Group
+from offsite.models import Ovenbird
+import logging
+logger = logging.getLogger(__name__)
+
+class UserFullName(Ovenbird):
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return self.get_full_name() or 'Anonymous'
+
 
 class UserManager(BaseUserManager):
 
@@ -19,6 +31,7 @@ class UserManager(BaseUserManager):
             email=email,
             is_staff=True,
             is_active=True,
+            is_superuser=True
             **kwargs
         )
         user.set_password(password)
@@ -37,11 +50,15 @@ class CustomUser(AbstractBaseUser):
     joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_ovenbird = models.BooleanField(default=False)
-    is_adser = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    group = models.ManyToManyField(
+        Group,
+        blank=True,
+    )
     
     class Meta:
         verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
         
     objects = UserManager()
     
@@ -50,14 +67,13 @@ class CustomUser(AbstractBaseUser):
     
     def get_full_name(self):
         # The user is identified by their email address
-        return self.email
+        return UserFullName.objects.get(customuser_id=self.id)
 
     def get_short_name(self):
         # The user is identified by their email address
         return self.email
     
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
         return True
 
@@ -65,3 +81,7 @@ class CustomUser(AbstractBaseUser):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
+    
+    def has_group(self, group):
+        # Simplest possible answer: Yes, always
+        return self.groups.filter(name=group).exists()

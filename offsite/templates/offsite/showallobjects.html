@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Главная страница</title>
+  </head>
+  <body>
+  {% load mptt_tags %}
+    
+	<br/>
+	{% for object in objects %}
+	<div class="objects">
+		{{object.id }}
+	</div>
+	{% endfor %}
+	<br/>
+	<div class="choices">
+		<ul class="root">
+    		{% recursetree nodes %}
+        	<li>
+        		<label>
+            		{{ node.name }}
+            		<input id="input_{{ node.id }}" type="checkbox" {% if node.checked != 0 %} checked {% endif %}>
+            	</label>
+            	{% if not node.is_leaf_node %}
+                	<ul class="children">
+                    	{{ children }}
+                	</ul>
+            	{% endif %}
+        	</li>
+    		{% endrecursetree %}
+		</ul>
+		<a href="{% url 'offsite:showallobjects' '' %}">Принять</a>
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="/static/offsite/js/main.js"></script>
+  </body>
+</html>

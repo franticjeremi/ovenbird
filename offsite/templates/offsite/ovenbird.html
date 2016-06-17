@@ -3,16 +3,27 @@
   <head>
   	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Печники</title>
+    {% load compress %}
+    {% compress css %}
     <link href="/static/registration/css/styles.css" rel="stylesheet" type="text/css">
+    {% endcompress %}
     <script type="text/javascript" src="/static/registration/js/jquery-2.2.0.min.js"></script>
   </head>
   <body>
+  {% load myfilters %}
   <a href="{{request.META.HTTP_REFERER}}">Назад</a>
 	{{ ovenbird.name }}
-	{% if request.user.id == ovenbird.customuser_id %}
-		<a href="{% url 'offsite:createobject' %}">Создать новый объект</a>
-		<a href="{% url 'offsite:createarticle' %}">Создать новую статью</a>
-		<a href="{% url 'offsite:showfile' %}">Добавить фотографии</a>
+	{{ ovenbird.balance }}
+	{% if request.user.is_authenticated %}
+		{% if request.user|has_group:"Печники" %}
+			<a href="{% url 'offsite:createobject' %}">Создать новый объект</a>
+			<a href="{% url 'offsite:createarticle' %}">Создать новую статью</a>
+			<a href="{% url 'offsite:showfile' %}">Добавить фотографии</a>
+		{% endif %}
+		{% if request.user|has_group:"Рекламодатели" %}
+			<a href="{% url 'offsite:createitem' %}">Создать новый товар</a>
+			<a href="{% url 'offsite:createads' %}">Создать новую рекламу</a>
+		{% endif %}
 	{% endif %}
 	<br/>
 	Объекты
@@ -31,12 +42,56 @@
 	Статьи
 	<br/>
 	{% for article in articles %}
-		<a href="{% url 'offsite:updateobject' article.id %}">{{article.title}}</a>
+	<div class="objects">
+		<a href="{% url 'offsite:showarticle' article.id %}">{{article.title}}</a>
 		{{article.text | striptags }}
+		{% if request.user.id == ovenbird.customuser_id %}
+			<a id={{article.id}} href="{% url 'offsite:updatearticle' article.id %}">Изменить</a>
+			<a id={{article.id}} href="{% url 'offsite:showallfile' article.id %}">Добавить фотографии</a>
+			<a id={{article.id}} class="delete" href="{% url 'offsite:deletearticle' article.id %}">Удалить</a>
+		{% endif %}
+	</div>
+	{% endfor %}
+	Товары
+	<br/>
+	{% for item in items %}
+	<div class="objects">
+		<a href="{% url 'offsite:updateitem' item.id %}">{{item.name}}</a>
+		{{item.text | striptags }}
+		{% if request.user.id == ovenbird.customuser_id %}
+			<a id={{item.id}} href="{% url 'offsite:updateitem' item.id %}">Изменить</a>
+			<a id={{item.id}} href="{% url 'offsite:showallfile' item.id %}">Добавить фотографии</a>
+			<a id={{item.id}} class="delete" href="{% url 'offsite:deleteitem' item.id %}">Удалить</a>
+		{% endif %}
+	</div>
+	{% endfor %}
+	Заявки
+	<br/>
+	{% for item in items %}
+	<div class="objects">
+		<a href="{% url 'offsite:updateitem' item.id %}">{{item.name}}</a>
+		{{item.text | striptags }}
+		{% if request.user.id == ovenbird.customuser_id %}
+			<a id={{item.id}} href="{% url 'offsite:updateitem' item.id %}">Изменить</a>
+			<a id={{item.id}} href="{% url 'offsite:showallfile' item.id %}">Добавить фотографии</a>
+			<a id={{item.id}} class="delete" href="{% url 'offsite:deleteitem' item.id %}">Удалить</a>
+		{% endif %}
+	</div>
+	{% endfor %}
+	Рекламные проекты
+	<br/>
+	{% for ads in adses %}
+	<div class="ads">
+		{{ads.title}} 
+		<a data-id={{ads.id}} href="{% url 'offsite:updateads' ads.id %}">Изменить</a>
+		<a data-id={{ads.id}} class="delete" href="{% url 'offsite:deleteads' ads.id %}">Удалить</a>
 		<br/>
+	</div>
 	{% endfor %}
 	<div id="results"></div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    {% compress js %}
 	<script src="/static/offsite/js/main.js"></script>
+	{% endcompress %}
   </body>
 </html>

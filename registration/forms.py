@@ -6,8 +6,6 @@ from captcha.fields import CaptchaField
 
 from registration.models import CustomUser
 
-MY_CHOICES = ((1,'Печник'),(2,'Рекламодатель'))
-
 class RegistrationForm(UserCreationForm):
     """A form for registration new users. Includes all the required
     fields, plus a repeated password."""
@@ -29,26 +27,10 @@ class RegistrationForm(UserCreationForm):
     captcha = CaptchaField(
         label="Капча"
     )
-    checkbox = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple, 
-        choices=MY_CHOICES,
-        label="Выбор типа пользователя",
-        initial=(c[0] for c in MY_CHOICES)
-    )
-    
-    is_ovenbird = forms.BooleanField(
-        widget=forms.HiddenInput(),
-        required=False 
-    )
-    
-    is_adser = forms.BooleanField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
 
     class Meta:
         model = CustomUser
-        fields = ['email','password1', 'password2', 'checkbox', 'is_ovenbird', 'is_adser']
+        fields = ['email','password1', 'password2']
 
     def clean_password2(self):
         # Check that the two password entries match

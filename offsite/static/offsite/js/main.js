@@ -104,6 +104,32 @@
 			event.preventDefault();
 			get_photos(this);
 		});
+		$('.vote').on('click', function(event){
+		    event.preventDefault();
+		    vote(this);
+		});
+		$('div.choices').on('click', 'a', function(event){
+			event.preventDefault();
+			query = '';
+			parent = $(this).parent();
+			// получение всех выбранных чекбоксов
+			$(parent).find('input:checkbox:checked').each(function () {
+				parent = $(this).parent();
+				// очистка от лишних пробелов
+				texttrim = $.trim($(parent).text())
+			    query += texttrim + '&';
+			});
+			this.href += query;
+			window.location = this.href;
+		});
+	    $('div.choices').on('change', 'input', function() {
+	    	parent = $(this).parent().closest('li');
+	    	$(parent).find("input:checkbox").prop('checked', $(this).prop("checked"));
+	    });
+	    $('body').on('click', '.message', function(event) {
+	    	event.preventDefault();
+	    	auth_user(this);
+	    });
 	});
 	// удаление файла
 	delete_file = function(element) {
@@ -388,6 +414,39 @@
 	        			$(clone).children()[1].src = $(clone).children()[1].name+fields[i].fields.image;
 	        		}
 	        	}
+	        },
+	        error : function(xhr,errmsg,err) {
+	            console.log(xhr.status + ": " + xhr.responseText);
+	        }
+	    });
+	}
+	vote = function(element) {
+		$.ajax({
+	        url : element.href,
+	        type : "POST",
+	        beforeSend: function (request) {
+                request.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+	        success : function(response) {
+	        	console.log(response);
+	        	if (response.status == 'success') {
+	        		
+	        	}
+	        },
+	        error : function(xhr,errmsg,err) {
+	            console.log(xhr.status + ": " + xhr.responseText);
+	        }
+	    });
+	}
+	auth_user = function(element) {
+		$.ajax({
+	        url : element.href,
+	        type : "GET",
+	        beforeSend: function (request) {
+                request.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+	        success : function(response) {
+	        	console.log(response);
 	        },
 	        error : function(xhr,errmsg,err) {
 	            console.log(xhr.status + ": " + xhr.responseText);

@@ -126,9 +126,13 @@
 	    	parent = $(this).parent().closest('li');
 	    	$(parent).find("input:checkbox").prop('checked', $(this).prop("checked"));
 	    });
-	    $('body').on('click', '.message', function(event) {
+	    $('body').on('click', '.vkmessage', function(event) {
 	    	event.preventDefault();
 	    	auth_user(this);
+	    });
+	    $('body').on('click', '.message', function(event) {
+	    	event.preventDefault();
+	    	send_message(this);
 	    });
 	});
 	// удаление файла
@@ -451,6 +455,23 @@
 	        error : function(xhr,errmsg,err) {
 	            console.log(xhr.status + ": " + xhr.responseText);
 	        }
+	    });
+	}
+	send_message = function(element) {
+		data = {'getter':1, 'text':'test message'};
+		$.ajax({
+	        url : element.href,
+	        type : "POST",
+	        beforeSend: function (request) {
+                request.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+	        success : function(response) {
+	        	console.log(response);
+	        },
+	        error : function(xhr,errmsg,err) {
+	            console.log(xhr.status + ": " + xhr.responseText);
+	        },
+	        data: data
 	    });
 	}
 })();

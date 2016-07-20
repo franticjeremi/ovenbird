@@ -24,6 +24,10 @@
 			<a href="{% url 'offsite:createitem' %}">Создать новый товар</a>
 			<a href="{% url 'offsite:createads' %}">Создать новую рекламу</a>
 		{% endif %}
+		{% if request.user.id != ovenbird.customuser_id %}
+			<button>Отправить личное сообщение</button>
+		{% endif %}
+		
 	{% endif %}
 	<br/>
 	Объекты

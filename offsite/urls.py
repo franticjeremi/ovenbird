@@ -69,5 +69,9 @@ urlpatterns = [
         url(r'^Delete/(?P<pk>\d+)/$', views.DeleteObject.as_view(), name='deleterequest'),
     ])),
     url(r'^/vote/(?P<pk>\d+)/$', views.VoteUp, name="voteup"),
-    url(r'^/send_message/$', vkviews.SendMessage, name="sendmessage"),
+    url(r'^VK/', include([
+        url(r'^/send_message/$', vkviews.SendMessage, name="vksendmessage"),
+    ])),
+    #url(r'^/send_message/$', views.SendMessage.as_view(), name="sendmessage"),
+    url(r'^/send_message/$', views.AddPayment.as_view(), name="sendmessage"),
 ]

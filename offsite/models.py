@@ -163,7 +163,7 @@ class Ads(models.Model):
     class Meta:
         verbose_name = "Реклама"
         verbose_name_plural = "Реклама"
-    
+
     
 class Filter(MPTTModel):
     name = models.CharField(max_length=200)
@@ -185,4 +185,41 @@ class Filter(MPTTModel):
     class MPTTMeta:
         level_attr = 'mptt_level'
         order_insertion_by = ['name']
+    
+class Partition(models.Model):
+    name = models.CharField(max_length=50)
+    
+    class Meta:
+        verbose_name = "Раздел"
+        verbose_name_plural = "Разделы"
+        
+class Message(models.Model):
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        related_name='sender'
+    )
+    getter = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        related_name='getter'
+    )
+    text = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    is_show = models.BooleanField(default = False)
+    
+    class Meta:
+        verbose_name = "Сообщение"
+        verbose_name_plural = "Сообщения"
+        
+class PaymentTraffic(models.Model):
+    customuser = models.ForeignKey(settings.AUTH_USER_MODEL)
+    payment = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+    )
+    description = models.CharField(max_length=50)
+    date_created = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "Платёж"
+        verbose_name_plural = "Платежи"
     

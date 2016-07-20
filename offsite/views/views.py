@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-from ..models import Ovenbird, Object, Photo, Ads, Filter
+from ..models import Ovenbird, Object, Photo, Ads, Filter, Message, PaymentTraffic
 from registration.models import CustomUser
 from django.contrib.auth.models import Group
 from allauth.socialaccount.models import SocialToken, SocialAccount
@@ -7,7 +7,7 @@ from django.shortcuts import render, render_to_response, redirect, get_object_or
 from django.http import Http404
 from django.core.urlresolvers import reverse 
 from django.views.generic import ListView, TemplateView, DetailView
-from django.views.generic.edit import UpdateView, DeleteView, CreateView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView, View
 from django.template import RequestContext
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..forms import OvenbirdForm, ObjectForm, FileUploadForm, AdsForm
@@ -580,10 +580,6 @@ class DeleteAds(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
             logger.error(str(e))
         return JsonResponse(json)
 
-@method_decorator(login_required(login_url='/registration/login'))
-def BillPayment(object):
-    pass
-
 def VoteUp(request, pk):
     if request.method == 'POST':
         try:
@@ -631,3 +627,36 @@ class ShowAllObjects(ListView):
                                                 from rec
                                                 order by mptt_level, name''', [query_string])
         return context
+    
+class SendMessage(LoginRequiredMixin, View):
+    model = Message
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.model.objects.create(
+                getter_id = request.POST['getter'], 
+                sender_id = request.user.id, 
+                text = request.POST['text']
+            )
+            json = {'status':'success'}
+        except Exception as e:
+            json = {'status':'denied', 'error':str(e)}
+            logger.error(str(e))
+        return JsonResponse(json)
+    
+# add, subtract
+class AddPayment(LoginRequiredMixin, View):
+    model = PaymentTraffic
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            self.model.objects.create(
+                customuser_id = request.user.id,
+                payment = 0,
+                description = 'add'
+            )
+            json = {'status':'success'}
+        except Exception as e:
+            json = {'status':'denied', 'error':str(e)}
+            logger.error(str(e))
+        return JsonResponse(json)
